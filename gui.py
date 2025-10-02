@@ -15,11 +15,12 @@ class App(tk.Tk):
         self.shared_image = None
 
         # Container for frames
-        self.container = tk.Frame(self)
+        self.container = tk.Frame(self, width=600, height=400)
         self.container.pack(fill="both", expand=True)
+        self.container.pack_propagate(False)
 
         self.frames = {}
-        for F in (MainPage, SecondPage, InfoPage):
+        for F in (MainPage, SecondPage, InfoPage, ResultsPage):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
@@ -40,22 +41,22 @@ class MainPage(tk.Frame):
         self.controller = controller
         self.configure(background='orange')
         
-        tk.Label(self, text="Welcome to Snake Sight", font=("Arial", 18)).pack(pady=10, padx=250)
+        tk.Label(self, text="Welcome to Snake Sight", font=("Arial", 18)).pack(pady=20, padx=(0,75), anchor="center")
 
         # Status label (not the image itself)
         self.status_label = tk.Label(self, text="No image submitted")
-        self.status_label.pack(pady=10)
+        self.status_label.pack(pady=10, padx=(0,75), anchor="center")
 
         # Upload button
         upload_btn = tk.Button(self, text="Upload Image", command=self.upload_image)
-        upload_btn.pack(pady=65, padx=50)
+        upload_btn.pack(pady=30, padx=(0,75), anchor="center")
 
         # Forward button
         next_btn = tk.Button(
             self, text="Go to Second Page",
             command=lambda: controller.show_frame("SecondPage")
         )
-        next_btn.pack(pady=55, padx=50)
+        next_btn.pack(pady=40, padx=(0,75), anchor="center")
 
         #Disclaimer button
         info_btn = tk.Button(
@@ -88,7 +89,7 @@ class SecondPage(tk.Frame):
         self.controller = controller
         self.configure(background='orange')
 
-        tk.Label(self, text="Q&A", font=("Arial", 18)).pack(pady=10, padx=250)
+        tk.Label(self, text="Q&A", font=("Arial", 18)).pack(pady=10, padx=(0,85))
 
         # Back button
         back_btn = tk.Button(
@@ -97,6 +98,13 @@ class SecondPage(tk.Frame):
         )
         #back_btn.pack(pady=250, padx=20)
         back_btn.place(x=18, y=10)
+
+        #Get results button
+        results_btn = tk.Button(
+            self, text="Get Your Results",
+            command=lambda: controller.show_frame("ResultsPage")
+        )
+        results_btn.place(x=425, y=10)
     def update_page(self):
         """Optional refresh when shown."""
         pass
@@ -107,7 +115,7 @@ class InfoPage(tk.Frame):
         self.controller = controller
         self.configure(background='blue')
 
-        tk.Label(self, text="Disclaimer", font=("Arial", 18)).pack(pady=10, padx=250)
+        tk.Label(self, text="Disclaimer", font=("Arial", 18)).pack(pady=10, padx=(0,85))
         
         #disclaimer message for info page
         message = "Warning: This app is for demonstration purposes only. " \
@@ -123,6 +131,40 @@ class InfoPage(tk.Frame):
         )
         #back_btn.pack(pady=250, padx=20)
         back_btn.place(x=425, y=10)
+    def update_page(self):
+        """Optional refresh when shown."""
+        pass
+
+class ResultsPage(tk.Frame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+        self.controller = controller
+        self.configure(background='gray')
+
+        tk.Label(self, text="Your Results", font=("Arial", 18)).pack(pady=10, padx=(0,75))
+        
+        #frame for the text area
+        text_frame = tk.Frame(self)
+        text_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        scrollbar = tk.Scrollbar(text_frame)
+        scrollbar.pack(side="right", fill="y")
+
+        self.text_area = tk.Text(
+            text_frame, 
+            wrap="word",        # wraps text at word boundaries
+            #height=20,
+            yscrollcommand=scrollbar.set, 
+            font=("Arial", 12)
+        )
+        self.text_area.pack(fill="both", expand=True)
+
+        scrollbar.config(command=self.text_area.yview)
+
+    def add_info(self, text):
+        self.text_area.insert(tk.END, text)
+        self.text_area.see(tk.END)  # auto-scroll to bottom  
+
+        
     def update_page(self):
         """Optional refresh when shown."""
         pass
