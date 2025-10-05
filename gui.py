@@ -85,6 +85,7 @@ class MainPage(tk.Frame):
 
 class SecondPage(tk.Frame):
     def __init__(self, parent, controller):
+        
         super().__init__(parent)
         self.controller = controller
         self.configure(background='orange')
