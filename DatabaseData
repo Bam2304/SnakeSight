@@ -6,8 +6,10 @@
 from collections import defaultdict
 from supabase import create_client, Client
 #^supabase built in library for python
-supabase_url: str = "https://lgvelnkhepuokjbacqqx.supabase.co"
-supabase_key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxndmVsbmtoZXB1b2tqYmFjcXF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMTg1MzMsImV4cCI6MjA3Mzc5NDUzM30.E02uu9ATxmtKkIVHBT4EoD9k6VGQpHIQ6MGVmxgF81Q"
+
+supabase_url: str = ""
+supabase_key: str = ""
+
 supabase: Client = create_client(supabase_url, supabase_key)
 
 
