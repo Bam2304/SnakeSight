@@ -103,12 +103,33 @@ class SecondPage(tk.Frame):
         #Get results button
         results_btn = tk.Button(
             self, text="Get Your Results",
-            command=lambda: controller.show_frame("ResultsPage")
+            command=self.showResults
         )
         results_btn.place(x=425, y=10)
     def update_page(self):
         """Optional refresh when shown."""
         pass
+
+    def showResults(self):
+        controller = self.controller
+        results_page = controller.frames["ResultsPage"]
+
+        # Example of text from some external source
+        result_text = (
+            "Analysis Complete!\n\n"
+            "Snake Type: Eastern Diamondback Rattlesnake\n"
+            "Venom Severity: High\n"
+            "Recommended Action: Seek immediate medical attention.\n\n"
+            "Additional Info:\n"
+            "The Eastern Diamondback is the largest venomous snake in North America."
+        )
+
+        # Add text to ResultsPage
+        results_page.text_area.delete("1.0", tk.END)  # clear old text 
+        results_page.add_info(result_text)
+
+        # Switch to the ResultsPage
+        controller.show_frame("ResultsPage")
 
 class InfoPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -122,7 +143,7 @@ class InfoPage(tk.Frame):
         message = "Warning: This app is for demonstration purposes only. " \
         "Advice given here is to be taken with a grain of salt, and does not replace " \
         "the advice of actual medical professionals."
-        disclaimer_space = tk.Message(self, text=message, width=300, font=("Arial", 20), justify="center")
+        disclaimer_space = tk.Message(self, text=message, width=300, font=("Arial", 22), justify="center")
         disclaimer_space.place(x=150, y=125)
 
         # Back button
@@ -155,15 +176,11 @@ class ResultsPage(tk.Frame):
             wrap="word",        # wraps text at word boundaries
             #height=20,
             yscrollcommand=scrollbar.set, 
-            font=("Arial", 12)
+            font=("Arial", 18)
         )
         self.text_area.pack(fill="both", expand=True)
 
-        scrollbar.config(command=self.text_area.yview)
-
-    def add_info(self, text):
-        self.text_area.insert(tk.END, text)
-        self.text_area.see(tk.END)  # auto-scroll to bottom  
+        scrollbar.config(command=self.text_area.yview)  
 
         
     def update_page(self):
