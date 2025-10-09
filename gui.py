@@ -126,6 +126,7 @@ class SecondPage(tk.Frame):
 
         # Add text to ResultsPage
         results_page.text_area.delete("1.0", tk.END)  # clear old text 
+        
         results_page.add_info(result_text)
 
         # Switch to the ResultsPage
