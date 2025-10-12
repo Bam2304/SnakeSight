@@ -183,6 +183,9 @@ class ResultsPage(tk.Frame):
 
         scrollbar.config(command=self.text_area.yview)  
 
+    def add_info(self, text):
+        self.text_area.insert(tk.END, text)
+        self.text_area.see(tk.END)
         
     def update_page(self):
         """Optional refresh when shown."""
