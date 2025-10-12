@@ -1,6 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
+#pip install import-ipynb
+import import_ipynb #allows importing of notebook files, should not need if using just .py files
+import ResultsPageOutPutData
+
+OUTPUTResult = {1:10.0, 2:9.0 , 3:8.0 , 4:7.0 , 5:6.0}#remove when integrating with actual results page
+OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) #List[Dict{}]
 
 
 class App(tk.Tk):
@@ -114,15 +120,22 @@ class SecondPage(tk.Frame):
         controller = self.controller
         results_page = controller.frames["ResultsPage"]
 
+
+
+        #def ChangeIntoSeprateInfo(ResultInput)
         # Example of text from some external source
-        result_text = (
-            "Analysis Complete!\n\n"
-            "Snake Type: Eastern Diamondback Rattlesnake\n"
-            "Venom Severity: High\n"
-            "Recommended Action: Seek immediate medical attention.\n\n"
-            "Additional Info:\n"
-            "The Eastern Diamondback is the largest venomous snake in North America."
-        )
+        #"\n".join(ResultOutput)
+
+        result_text = "\n".join(OUTPUTResultOutput)
+        # (
+        #     "Analysis Complete!\n\n"
+        #     "Snake Type: Eastern Diamondback Rattlesnake\n"
+        #     "Venom Severity: High\n"
+        #     "Recommended Action: Seek immediate medical attention.\n\n"
+        #     "Additional Info:\n"
+        #     "The Eastern Diamondback is the largest venomous snake in North America."
+            
+        # )
 
         # Add text to ResultsPage
         results_page.text_area.delete("1.0", tk.END)  # clear old text 
@@ -182,6 +195,7 @@ class ResultsPage(tk.Frame):
         self.text_area.pack(fill="both", expand=True)
 
         scrollbar.config(command=self.text_area.yview)  
+
 
     def add_info(self, text):
         self.text_area.insert(tk.END, text)
