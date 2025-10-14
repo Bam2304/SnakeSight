@@ -61,5 +61,6 @@ for i in range( len( values )):
 
     # remove to avoid repeats
     del values[ indexMax ]
-    del keys[ indexMax ]
-print( rating )
+  #  del keys[ indexMax ]
+print( rating ) #change to return
+
