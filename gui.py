@@ -16,15 +16,16 @@ class App(tk.Tk):
 
         # Container for frames
         self.container = tk.Frame(self, width=600, height=400)
-        self.container.pack(fill="both", expand=True)
-        self.container.pack_propagate(False)
+        self.container.place(x=0, y=0, width=600, height=400)
+        
 
         self.frames = {}
         for F in (MainPage, SecondPage, InfoPage, ResultsPage):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
-            frame.grid(row=0, column=0, sticky="nsew")
+            frame.place(x=0, y=0, relwidth=1, relheight=1)  # makes each frame fill the window
+            
 
         self.show_frame("MainPage")
 
@@ -41,22 +42,22 @@ class MainPage(tk.Frame):
         self.controller = controller
         self.configure(background='orange')
         
-        tk.Label(self, text="Welcome to Snake Sight", font=("Arial", 18)).pack(pady=20, padx=(0,75), anchor="center")
+        tk.Label(self, text="Welcome to Snake Sight", font=("Arial", 18)).place(x=220, y=10)
 
         # Status label (not the image itself)
         self.status_label = tk.Label(self, text="No image submitted")
-        self.status_label.pack(pady=10, padx=(0,75), anchor="center")
+        self.status_label.place(x=250, y=100)
 
         # Upload button
         upload_btn = tk.Button(self, text="Upload Image", command=self.upload_image)
-        upload_btn.pack(pady=30, padx=(0,75), anchor="center")
+        upload_btn.place(x=250, y=130)
 
         # Forward button
         next_btn = tk.Button(
-            self, text="Go to Second Page",
+            self, text="Go to Q&A Page",
             command=lambda: controller.show_frame("SecondPage")
         )
-        next_btn.pack(pady=40, padx=(0,75), anchor="center")
+        next_btn.place(x=245, y=300)
 
         #Disclaimer button
         info_btn = tk.Button(
@@ -90,7 +91,7 @@ class SecondPage(tk.Frame):
         self.controller = controller
         self.configure(background='orange')
 
-        tk.Label(self, text="Q&A", font=("Arial", 18)).pack(pady=10, padx=(0,85))
+        tk.Label(self, text="Q&A", font=("Arial", 18)).place(x=275, y=10)
 
         # Back button
         back_btn = tk.Button(
@@ -102,10 +103,35 @@ class SecondPage(tk.Frame):
 
         #Get results button
         results_btn = tk.Button(
-            self, text="Get Your Results",
+            self, text="Get Your Results!",
             command=self.showResults
         )
         results_btn.place(x=425, y=10)
+
+        #label for selecting colors
+        tk.Label(self, text="What Color Was The Snake? (Can Select Multiple Colors)", 
+                 font=("Arial", 14)).place(x=20, y=70)
+
+        #variables to hold states of checkboxes
+        brownBox = tk.IntVar()
+        blackBox = tk.IntVar()
+        whiteBox = tk.IntVar()
+        yellowBox = tk.IntVar()
+        greenBox = tk.IntVar()
+        redBox = tk.IntVar()
+        orangeBox = tk.IntVar()
+        threeOrMoreBox = tk.IntVar()
+
+        #creating the checkboxes for selecting snake color
+        tk.Checkbutton(self, text="Brown", variable=brownBox).place(x=20, y=120)
+        tk.Checkbutton(self, text="Black", variable=blackBox).place(x=20, y=150)
+        tk.Checkbutton(self, text="White", variable=whiteBox).place(x=20, y=180)
+        tk.Checkbutton(self, text="Yellow", variable=yellowBox).place(x=20, y=210)
+        tk.Checkbutton(self, text="Green", variable=greenBox).place(x=20, y=240)
+        tk.Checkbutton(self, text="Red", variable=redBox).place(x=20, y=270)
+        tk.Checkbutton(self, text="Orange", variable=orangeBox).place(x=20, y=300)
+        tk.Checkbutton(self, text="3 or More Colors", variable=threeOrMoreBox).place(x=20, y=330)
+
     def update_page(self):
         """Optional refresh when shown."""
         pass
@@ -138,7 +164,7 @@ class InfoPage(tk.Frame):
         self.controller = controller
         self.configure(background='blue')
 
-        tk.Label(self, text="Disclaimer", font=("Arial", 18)).pack(pady=10, padx=(0,85))
+        tk.Label(self, text="Disclaimer", font=("Arial", 18)).place(x=245, y=10)
         
         #disclaimer message for info page
         message = "Warning: This app is for demonstration purposes only. " \
@@ -164,29 +190,30 @@ class ResultsPage(tk.Frame):
         self.controller = controller
         self.configure(background='gray')
 
-        tk.Label(self, text="Your Results", font=("Arial", 18)).pack(pady=10, padx=(0,75))
+         
+        tk.Label(self, text="Your Results:", font=("Arial", 18)).place(x=225, y=10)
         
-        #frame for the text area
-        text_frame = tk.Frame(self)
-        text_frame.pack(fill="both", expand=True, padx=10, pady=10)
-        scrollbar = tk.Scrollbar(text_frame)
-        scrollbar.pack(side="right", fill="y")
-
+        
+        #text area for the output text
         self.text_area = tk.Text(
-            text_frame, 
-            wrap="word",        # wraps text at word boundaries
-            #height=20,
-            yscrollcommand=scrollbar.set, 
-            font=("Arial", 18)
-        )
-        self.text_area.pack(fill="both", expand=True)
-
-        scrollbar.config(command=self.text_area.yview)  
+             self, 
+             wrap="word",        # wraps text at word boundaries
+             height=12,
+             width=40,
+             #yscrollcommand=scrollbar.set, 
+             font=("Arial", 17)
+         )
+        self.text_area.place(x=80, y=90)
+         
 
         
     def update_page(self):
         """Optional refresh when shown."""
         pass
+
+    def add_info(self, text):
+        self.text_area.insert(tk.END, text)
+        self.text_area.see(tk.END)
 
 if __name__ == "__main__":
     app = App()
