@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from PIL import Image, ImageTk
 #pip install import-ipynb
-import import_ipynb #allows importing of notebook files, should not need if using just .py files
+#import import_ipynb #allows importing of notebook files, should not need if using just .py files
 import ResultsPageOutPutData
 
 OUTPUTResult = {1:10.0, 2:9.0 , 3:8.0 , 4:7.0 , 5:6.0}#remove when integrating with actual results page
@@ -119,24 +119,24 @@ class SecondPage(tk.Frame):
                  font=("Arial", 14)).place(x=20, y=70)
 
         #variables to hold states of checkboxes
-        brownBox = tk.IntVar()
-        blackBox = tk.IntVar()
-        whiteBox = tk.IntVar()
-        yellowBox = tk.IntVar()
-        greenBox = tk.IntVar()
-        redBox = tk.IntVar()
-        orangeBox = tk.IntVar()
-        threeOrMoreBox = tk.IntVar()
+        self.brownBox = tk.IntVar()
+        self.blackBox = tk.IntVar()
+        self.whiteBox = tk.IntVar()
+        self.yellowBox = tk.IntVar()
+        self.greenBox = tk.IntVar()
+        self.redBox = tk.IntVar()
+        self.orangeBox = tk.IntVar()
+        self.threeOrMoreBox = tk.IntVar()
 
         #creating the checkboxes for selecting snake color
-        tk.Checkbutton(self, text="Brown", variable=brownBox).place(x=20, y=120)
-        tk.Checkbutton(self, text="Black", variable=blackBox).place(x=20, y=150)
-        tk.Checkbutton(self, text="White", variable=whiteBox).place(x=20, y=180)
-        tk.Checkbutton(self, text="Yellow", variable=yellowBox).place(x=20, y=210)
-        tk.Checkbutton(self, text="Green", variable=greenBox).place(x=20, y=240)
-        tk.Checkbutton(self, text="Red", variable=redBox).place(x=20, y=270)
-        tk.Checkbutton(self, text="Orange", variable=orangeBox).place(x=20, y=300)
-        tk.Checkbutton(self, text="3 or More Colors", variable=threeOrMoreBox).place(x=20, y=330)
+        tk.Checkbutton(self, text="Brown", variable=self.brownBox).place(x=20, y=120)
+        tk.Checkbutton(self, text="Black", variable=self.blackBox).place(x=20, y=150)
+        tk.Checkbutton(self, text="White", variable=self.whiteBox).place(x=20, y=180)
+        tk.Checkbutton(self, text="Yellow", variable=self.yellowBox).place(x=20, y=210)
+        tk.Checkbutton(self, text="Green", variable=self.greenBox).place(x=20, y=240)
+        tk.Checkbutton(self, text="Red", variable=self.redBox).place(x=20, y=270)
+        tk.Checkbutton(self, text="Orange", variable=self.orangeBox).place(x=20, y=300)
+        tk.Checkbutton(self, text="3 or More Colors", variable=self.threeOrMoreBox).place(x=20, y=330)
 
     def update_page(self):
         """Optional refresh when shown."""
@@ -145,9 +145,23 @@ class SecondPage(tk.Frame):
     def showResults(self):
         controller = self.controller
         results_page = controller.frames["ResultsPage"]
-
-
-
+        qnaResults = []
+        if self.brownBox:
+            qnaResults.append(1)
+        if self.blackBox:
+            qnaResults.append(2)
+        if self.whiteBoxBox:
+            qnaResults.append(3)
+        if self.yellowBox:
+            qnaResults.append(4)
+        if self.orangeBox:
+            qnaResults.append(5)
+        if self.redBox:
+            qnaResults.append(6)
+        if self.greenBox:
+            qnaResults.append(7)
+        if self.threeOrMoreBox:
+            qnaResults.append(8)
         #def ChangeIntoSeprateInfo(ResultInput)
         # Example of text from some external source
         #"\n".join(ResultOutput)

@@ -1,9 +1,9 @@
 #pip install nbimporter, not this one
 #pip install import-ipynb
  
-import import_ipynb
-import SnakeData
-Data = SnakeData.DataFromDatabase(); #Dict{int:Dict{str:any}} why print????????????? why output??? 
+#import import_ipynb
+import DatabaseData
+Data = DatabaseData.DataFromDatabase(); #Dict{int:Dict{str:any}} why print????????????? why output??? 
 # {'ID': 1, 'Venomous': False, 'SnakeDailyActivity': 'MostlyDiurnal', 'OtherName': ['PantherophisAlleghanie', 'CentralRatsnake', 'EasternRatsnake'], 'SnakeImage': ['https://lgvelnkhepuokjbacqqx.supabase.co/storage/v1/object/public/SnakeImages/BlackRatSnake/P.-alleghaniensis-1-Nick-Arms.jpg', 'https://lgvelnkhepuokjbacqqx.supabase.co/storage/v1/object/public/SnakeImages/BlackRatSnake/black_rat_snake_web-1024x683.jpg', 'https://lgvelnkhepuokjbacqqx.supabase.co/storage/v1/object/public/SnakeImages/BlackRatSnake/blackrat2.jpg']}
 # {'ID': 2, 'Venomous': False, 'SnakeDailyActivity': 'Diurnal', 'OtherName': ['ThamnophisSirtalis', 'CommonGarter'], 'SnakeImage': ['https://lgvelnkhepuokjbacqqx.supabase.co/storage/v1/object/public/SnakeImages/EasternGarter/images-2.jpeg\n', 'https://lgvelnkhepuokjbacqqx.supabase.co/storage/v1/object/public/SnakeImages/EasternGarter/images.jpeg', 'https://lgvelnkhepuokjbacqqx.supabase.co/storage/v1/object/public/SnakeImages/EasternGarter/images-3.jpeg']}
 
