@@ -79,8 +79,12 @@ class MainPage(tk.Frame):
         if file_path:
             # Load & store image (not displayed)
             img = Image.open(file_path)
-            self.controller.shared_image = ImageTk.PhotoImage(img)
-            self.status_label.config(text="Image submitted ✅")
+            try:
+                self.controller.shared_image = ImageTk.PhotoImage(img)
+                self.status_label.config(text="Image submitted ✅")
+            except Exception: #ImageTk could throw error opening file
+                self.status_label.config(text="Error opening file. " \
+                "Please choose another file.")
 
     def update_page(self):
         """Refresh page when shown."""
@@ -179,6 +183,9 @@ class SecondPage(tk.Frame):
 
         # Add text to ResultsPage
         results_page.text_area.delete("1.0", tk.END)  # clear old text 
+        
+        if type(result_text) != str:
+            result_text = "The type of result is not string. Error."
         
         results_page.add_info(result_text)
 
