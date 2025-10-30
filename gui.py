@@ -18,7 +18,7 @@ class App(tk.Tk):
         
 
         # Store uploaded image (shared across pages)
-        self.shared_image = None
+        self.sharedImage = None
 
         # Container for frames
         self.container = tk.Frame(self, width=600, height=400)
@@ -27,18 +27,18 @@ class App(tk.Tk):
 
         self.frames = {}
         for F in (MainPage, SecondPage, InfoPage, ResultsPage):
-            page_name = F.__name__
+            pageName = F.__name__
             frame = F(parent=self.container, controller=self)
-            self.frames[page_name] = frame
+            self.frames[pageName] = frame
             frame.place(x=0, y=0, relwidth=1, relheight=1)  # makes each frame fill the window
             
 
-        self.show_frame("MainPage")
+        self.showFrame("MainPage")
 
-    def show_frame(self, page_name):
+    def showFrame(self, page_name):
         """Raise the frame to the front."""
         frame = self.frames[page_name]
-        frame.update_page()  # let the page refresh its content
+        frame.updatePage()  # let the page refresh its content
         frame.tkraise()
 
 
@@ -51,47 +51,48 @@ class MainPage(tk.Frame):
         tk.Label(self, text="Welcome to Snake Sight", font=("Arial", 18)).place(x=220, y=10)
 
         # Status label (not the image itself)
-        self.status_label = tk.Label(self, text="No image submitted")
-        self.status_label.place(x=250, y=100)
+        self.statusLabel = tk.Label(self, text="No image submitted")
+        self.statusLabel.place(x=250, y=100)
 
         # Upload button
-        upload_btn = tk.Button(self, text="Upload Image", command=self.upload_image)
-        upload_btn.place(x=250, y=130)
+        uploadButton = tk.Button(self, text="Upload Image", command=self.uploadImage)
+        uploadButton.place(x=250, y=130)
 
         # Forward button
-        next_btn = tk.Button(
+        nextButton = tk.Button(
             self, text="Go to Q&A Page",
-            command=lambda: controller.show_frame("SecondPage")
+            command=lambda: controller.showFrame("SecondPage")
         )
-        next_btn.place(x=245, y=300)
+        nextButton.place(x=245, y=300)
 
         #Disclaimer button
-        info_btn = tk.Button(
+        infoButton = tk.Button(
             self, text="DISCLAIMER!",
-            command=lambda: controller.show_frame("InfoPage")
+            command=lambda: controller.showFrame("InfoPage")
         )
-        info_btn.place(x=18, y=10)
+        infoButton.place(x=18, y=10)
 
-    def upload_image(self):
-        file_path = filedialog.askopenfilename(
+    def uploadImage(self):
+        """Upload an image for photo recognition"""
+        filePath = filedialog.askopenfilename(
             filetypes=[("Image Files", "*.png *.jpg *.jpeg *.gif")]
         )
-        if file_path:
+        if filePath:
             # Load & store image (not displayed)
-            img = Image.open(file_path)
+            tempImg = Image.open(filePath)
             try:
-                self.controller.shared_image = ImageTk.PhotoImage(img)
-                self.status_label.config(text="Image submitted ✅")
+                self.controller.sharedImage = ImageTk.PhotoImage(tempImg)
+                self.statusLabel.config(text="Image submitted ✅")
             except Exception: #ImageTk could throw error opening file
-                self.status_label.config(text="Error opening file. " \
+                self.statusLabel.config(text="Error opening file. " \
                 "Please choose another file.")
 
-    def update_page(self):
+    def updatePage(self):
         """Refresh page when shown."""
-        if self.controller.shared_image:
-            self.status_label.config(text="Image submitted ✅")
+        if self.controller.sharedImage:
+            self.statusLabel.config(text="Image submitted ✅")
         else:
-            self.status_label.config(text="No image submitted")
+            self.statusLabel.config(text="No image submitted")
 
 
 class SecondPage(tk.Frame):
