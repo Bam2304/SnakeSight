@@ -73,7 +73,7 @@ class MainPage(tk.Frame):
         infoButton.place(x=18, y=10)
 
     def uploadImage(self):
-        """Upload an image for photo recognition"""
+        """Upload an image for potential photo recognition"""
         filePath = filedialog.askopenfilename(
             filetypes=[("Image Files", "*.png *.jpg *.jpeg *.gif")]
         )
@@ -105,19 +105,19 @@ class SecondPage(tk.Frame):
         tk.Label(self, text="Q&A", font=("Arial", 18)).place(x=275, y=10)
 
         # Back button
-        back_btn = tk.Button(
+        backButton = tk.Button(
             self, text="Back to Main Page",
-            command=lambda: controller.show_frame("MainPage")
+            command=lambda: controller.showFrame("MainPage")
         )
         #back_btn.pack(pady=250, padx=20)
-        back_btn.place(x=18, y=10)
+        backButton.place(x=18, y=10)
 
         #Get results button
-        results_btn = tk.Button(
+        resultsButton = tk.Button(
             self, text="Get Your Results!",
             command=self.showResults
         )
-        results_btn.place(x=425, y=10)
+        resultsButton.place(x=425, y=10)
 
         #label for selecting colors
         tk.Label(self, text="What Color Was The Snake? (Can Select Multiple Colors)", 
@@ -143,19 +143,22 @@ class SecondPage(tk.Frame):
         tk.Checkbutton(self, text="Orange", variable=self.orangeBox).place(x=20, y=300)
         tk.Checkbutton(self, text="3 or More Colors", variable=self.threeOrMoreBox).place(x=20, y=330)
 
-    def update_page(self):
+    def updatePage(self):
         """Optional refresh when shown."""
         pass
 
     def showResults(self):
+        """This method will take the calculations for best snake match
+        and ouput the results to the Results Page"""
+
         controller = self.controller
-        results_page = controller.frames["ResultsPage"]
+        resultsPage = controller.frames["ResultsPage"]
         qnaResults = []
-        if self.brownBox:
+        if self.brownBox: #if the checkbox is clicked, append the corresponding score
             qnaResults.append(1)
         if self.blackBox:
             qnaResults.append(2)
-        if self.whiteBoxBox:
+        if self.whiteBox:
             qnaResults.append(3)
         if self.yellowBox:
             qnaResults.append(4)
@@ -171,7 +174,7 @@ class SecondPage(tk.Frame):
         # Example of text from some external source
         #"\n".join(ResultOutput)
 
-        result_text = "\n".join(OUTPUTResultOutput)
+        resultText = "\n".join(OUTPUTResultOutput)
         # (
         #     "Analysis Complete!\n\n"
         #     "Snake Type: Eastern Diamondback Rattlesnake\n"
@@ -183,15 +186,15 @@ class SecondPage(tk.Frame):
         # )
 
         # Add text to ResultsPage
-        results_page.text_area.delete("1.0", tk.END)  # clear old text 
+        resultsPage.outputTextArea.delete("1.0", tk.END)  # clear old text 
         
-        if type(result_text) != str:
-            result_text = "The type of result is not string. Error."
+        if type(resultText) != str:
+            resultText = "The type of result is not string. Error."
         
-        results_page.add_info(result_text)
+        resultsPage.addInfo(resultText)
 
         # Switch to the ResultsPage
-        controller.show_frame("ResultsPage")
+        controller.showFrame("ResultsPage")
 
 class InfoPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -202,20 +205,22 @@ class InfoPage(tk.Frame):
         tk.Label(self, text="Disclaimer", font=("Arial", 18)).place(x=245, y=10)
         
         #disclaimer message for info page
-        message = "Warning: This app is for demonstration purposes only. " \
+        disclaimerMessage = "Warning: This app is for demonstration purposes only. " \
         "Advice given here is to be taken with a grain of salt, and does not replace " \
         "the advice of actual medical professionals."
-        disclaimer_space = tk.Message(self, text=message, width=300, font=("Arial", 22), justify="center")
-        disclaimer_space.place(x=150, y=125)
+        disclaimerSpace = tk.Message(self, text=disclaimerMessage, width=300, 
+                                      font=("Arial", 22), justify="center")
+        disclaimerSpace.place(x=150, y=125)
 
         # Back button
-        back_btn = tk.Button(
+        backButton = tk.Button(
             self, text="Back to Main Page",
-            command=lambda: controller.show_frame("MainPage")
+            command=lambda: controller.showFrame("MainPage")
         )
         #back_btn.pack(pady=250, padx=20)
-        back_btn.place(x=425, y=10)
-    def update_page(self):
+        backButton.place(x=425, y=10)
+
+    def updatePage(self):
         """Optional refresh when shown."""
         pass
 
@@ -230,29 +235,25 @@ class ResultsPage(tk.Frame):
         
         
         #text area for the output text
-        self.text_area = tk.Text(
+        self.outputTextArea = tk.Text(
              self, 
-             wrap="word",        # wraps text at word boundaries
+             wrap="word",        
              height=12,
-             width=40,
-             #yscrollcommand=scrollbar.set, 
+             width=40, 
              font=("Arial", 17)
          )
-        self.text_area.place(x=80, y=90)
+        self.outputTextArea.place(x=80, y=90)
          
 
 
-    def add_info(self, text):
-        self.text_area.insert(tk.END, text)
-        self.text_area.see(tk.END)
+    def addInfo(self, text):
+        """Adds info to the text area on the Results Page"""
+        self.outputTextArea.insert(tk.END, text)
+        self.outputTextArea.see(tk.END)
         
-    def update_page(self):
+    def updatePage(self):
         """Optional refresh when shown."""
         pass
-
-    def add_info(self, text):
-        self.text_area.insert(tk.END, text)
-        self.text_area.see(tk.END)
 
 if __name__ == "__main__":
     app = App()
