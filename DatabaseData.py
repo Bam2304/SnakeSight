@@ -5,22 +5,27 @@
 #.execute, executes the "sql" calls, and returns the column data off of the Databse table
 from collections import defaultdict
 from supabase import create_client, Client
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 #^supabase built in library for python
 def DataFromDatabase():
-    supabase_url: str = "https://lgvelnkhepuokjbacqqx.supabase.co"
-    supabase_key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxndmVsbmtoZXB1b2tqYmFjcXF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMTg1MzMsImV4cCI6MjA3Mzc5NDUzM30.E02uu9ATxmtKkIVHBT4EoD9k6VGQpHIQ6MGVmxgF81Q"
+    supabase_url: str = os.getenv("SUPABASE_URL")
+    supabase_key: str = os.getenv("SUPABASE_KEY")
     supabase: Client = create_client(supabase_url, supabase_key)
 
 
     #Gets Data From the Main Table in Supabase
-    response = supabase.table("SnakeMain").select("*").execute() 
+    response = (supabase.from_("SnakeMain").select("*").execute() )
+    data = response.data
     DataMain = response.data
-    #print(DataMain)
+
 
     #Gets Data From the Habits Table in Supabase
-    response = supabase.table("Habits").select("*").execute()
+    response = (supabase.from_("Habits").select("*").execute())
     DataHabits = response.data
-    #print(DataHabits)
+ 
 
     #only returns row where the values is not equal to NONE 
     CleanedRowsHabits = [
@@ -31,7 +36,7 @@ def DataFromDatabase():
 
 
     #gets data from the characteristics table
-    response = supabase.table("Characteristics").select("*").execute()
+    response = ( supabase.from_("Characteristics").select("*").execute() )
     DataCharacteristics = response.data
 
 
@@ -47,7 +52,7 @@ def DataFromDatabase():
 
 
     #gets data from the OtherNames table
-    response = supabase.table("OtherNames").select("*").execute()
+    response =( supabase.from_("OtherNames").select("*").execute())
     DataOtherNames = response.data
 
 
@@ -60,7 +65,7 @@ def DataFromDatabase():
 
 
     #gets data from the SnakeImages table
-    response = supabase.table("SnakeImages").select("*").execute()
+    response = (supabase.from_("SnakeImages").select("*").execute())
     DataSnakeImages = response.data
 
 
@@ -72,54 +77,7 @@ def DataFromDatabase():
 
 
 
-
-
-    CongelledData = {}
-    SnakeDict = {'8':7.0,'5':6.0}
-
-    # for item in SnakeDict:
-    #   ## print(type(item))
-    #     for value in CleanedRowsOtherNames:
-    #        # print(value)
-    #         if value['ID'] == int(item):
-    #             CongelledData['ID'] = int(item)
-    #             CongelledData['OtherName'] = value['OtherName']
-
-
-    #searches through given List of Dict
-    # then combines into a dict with List values with the keys being the ID values from the given List of Dict
-
-
-    #maybe try a diffrent storage method
-    def SortByID(GivenList):
-        TempDict = {}
-        for item in GivenList:
-            ID = item.get('ID')
-            if ID is None:
-                continue  
-
-
-            data = {k: v for k, v in item.items() if k != 'ID'}
-
-            TempDict.setdefault(ID, []).append(data)
-
-        
-        return TempDict
-
-
-
-    #Should Need No Further Edits From Here
-    #print(CleanedRowsCharacteristics)
-
-    FinalCharactersiticsList = SortByID(CleanedRowsCharacteristics)
-    # print(FinalCharactersiticsList)
-
-
-
-    FinalHabitsList = SortByID(CleanedRowsHabits)
-    FinalOtherNamesDict = SortByID(CleanedRowsOtherNames)
-    FinalSnakeImagesDict = SortByID(CleanedRowsSnakeImages)
-
+    
     BigFinalList = CleanedRowsCharacteristics + CleanedRowsHabits + CleanedRowsOtherNames + CleanedRowsSnakeImages
 
     merged = defaultdict(dict)
@@ -127,20 +85,11 @@ def DataFromDatabase():
 
     #sorts ID, but does not properly store every data value, overwrites the previous value only holds last one
     #only an issue for otherNames which can be multiple, IE. snake 3. FUture Issue for Color and potentially other catogories
-    for item in BigFinalList:
-        ID = item['ID']
-        merged[ID].update(item)
+    # for item in BigFinalList:
+    #     ID = item['ID']
+    #     merged[ID].update(item)
 
-    # for value in CleanedRowsOtherNames:
-    #     #print(value)
-    #     if value['ID'] == 3:
-    #         print(value['OtherName'])
-
-    #print(dict(merged))
-
-    # for item in dict(merged):
-    #     print(dict(merged)[item])
-
+    
 
     #goes into a combiation of every data point off of the database (List[{}]) returns it to be a Dict{} with key being 'ID'
     #and the value being a Dict of all info related to snake, including ID
@@ -160,13 +109,17 @@ def DataFromDatabase():
             else:
                 merged[ID][key] = value
 
-    #print(dict(merged))
-
-    for item in dict(merged):
-        print(dict(merged)[item])
+    
 
     FullDict = dict(merged)
+    # print(FullDict)
     return FullDict
+
+DataFromDatabase()
+
+
+
+
 
 
 

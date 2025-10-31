@@ -1,0 +1,67 @@
+from geopy.distance import geodesic
+import pandas as pd
+import numpy as np
+#pip install geopy
+# Define two points as (latitude, longitude)
+point1 = (40.7128, -74.0060)  # New York
+point2 = (34.0522, -118.2437) # Los Angeles
+
+# Calculate distance
+distance_km = geodesic(point1, point2).kilometers
+distance_miles = geodesic(point1, point2).miles
+
+##print(f"Distance: {distance_miles:.2f} miles")
+
+#extracrion method for when I eventually make calls to the databse
+pointsDict = [
+    {"lat": 43.0621, "lon": -76.1305, "city": "A"},
+    {"lat": 43.0358, "lon": -76.1609, "city": "B"},
+    {"lat": 35.6764, "lon": 139.6500, "city": "Tokyo"}
+]
+
+points2 = [(d["lat"], d["lon"]) for d in pointsDict]
+
+
+#test with set data not on supabase
+point1 = (43.0481, -76.1474) #syracuse new york
+
+
+
+#all points within 1-20 miles
+print()
+
+points = [
+    (43.0621, -76.1305),
+    (43.0358, -76.1609),
+    (43.0702, -76.1756),
+    (43.0415, -76.1103),
+    (43.0549, -76.1401),
+    (43.0298, -76.1252),
+    (43.0805, -76.1509),
+    (43.0502, -76.1708),
+    (43.0651, -76.1354),
+    (43.0401, -76.1555),
+    (35.6764, 139.6500)
+]
+lat0, lon0 = 43.0481, -76.1474
+# Create a DataFrame
+df = pd.DataFrame(points, columns=['lat', 'lon'])
+
+# Vectorized Haversine formula
+lat_rad = np.radians(df['lat'])
+lon_rad = np.radians(df['lon'])
+lat0_rad = np.radians(lat0)
+lon0_rad = np.radians(lon0)
+
+dlat = lat_rad - lat0_rad
+dlon = lon_rad - lon0_rad
+a = np.sin(dlat/2)**2 + np.cos(lat0_rad) * np.cos(lat_rad) * np.sin(dlon/2)**2
+c = 2 * np.arcsin(np.sqrt(a))
+r = 3956  # Radius of Earth in miles
+
+df['distance_miles'] = c * r
+
+# Filter points within 10 miles
+within_10_miles = df[df['distance_miles'] <= 10]
+
+print(within_10_miles)
