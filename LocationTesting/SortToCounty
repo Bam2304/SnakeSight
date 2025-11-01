@@ -1,0 +1,43 @@
+import geopandas as gpd
+import pandas as pd
+from shapely.geometry import Point
+
+import time
+
+
+
+# Load counties from the built-in US Census dataset
+counties = gpd.read_file("tl_2025_us_county.zip")
+
+
+
+# Example list of lat/lon points
+points = [
+    (43.0621, -76.1305),
+    (43.0358, -75.1609),
+    (43.0702, -76.1756),
+]
+
+# Create DataFrame
+df = pd.DataFrame(points, columns=["lat", "lon"])
+
+# Convert to GeoDataFrame
+gdf_points = gpd.GeoDataFrame(
+    df,
+    geometry=[Point(xy) for xy in zip(df.lon, df.lat)],
+    crs="EPSG:4326"  # WGS84 coordinate system
+)
+
+counties = counties.to_crs("EPSG:4326")
+
+
+# Perform spatial join
+joined = gpd.sjoin(gdf_points, counties, how="left", predicate="within")
+
+# Show results
+print(joined[["lat", "lon", "NAME", "STATEFP", "COUNTYFP"]])
+
+templist = []
+for state in joined["STATEFP"]:
+    templist.append(state)
+    print(state)
