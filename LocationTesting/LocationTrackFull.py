@@ -1,4 +1,3 @@
-
 ##EVERYONE BUT ME DO NOT RUN
 ##IT WILL ADD DUMMY DATA TO DATABASE
 ##DONT RUN IT
@@ -18,6 +17,10 @@ from shapely.geometry import Point
 import geopandas as gpd
 from supabase import create_client, Client
 
+#creates client for supabase so can read and input to supabase
+supabase_url: str = os.getenv("SUPABASE_URL")
+supabase_key: str = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(supabase_url, supabase_key)
 #idk bruh leave it
 
 
@@ -53,7 +56,6 @@ def getGeoData(ip):
 
 #time stamp
 
-#to find within ten days subtract 864,000 seconds  z = current - (864000) and then do  z<= (anything in between) <= current
 #in progress for future...
 def getPhoneIP():
     url = "https://jsonip.com/"
@@ -108,84 +110,136 @@ def sortLongLatToLocation(points):
 #testing defining county and state codes to add to database
     
 #Make into a function from here ------------------------------------------------------------
-points = [
-    (43.0621, -76.1305),
-    (43.0358, -75.1609),
-    (43.0702, -76.1756),
-]
-joined = sortLongLatToLocation(points)
-templist = []
-for state in joined["STATEFP"]:
-        templist.append(state)
-        print(state)
+def addToDatabase():  
+    points = [
+        (43.0621, -76.1305),
+        (43.0358, -75.1609),
+        (43.0702, -76.1756),
+    ]
+    joined = sortLongLatToLocation(points)
+    templist = []
+    for state in joined["STATEFP"]:
+            templist.append(state)
+            print(state)
 
 
 
-##Get Longitude,Latitutde from IP
+    ##Get Longitude,Latitutde from IP
 
 
-#time
-#print(GeoData)
+    #time
+    #print(GeoData)
 
-publicIP = getPublicIp()
-GeoData = getGeoData(publicIP)
-print(publicIP) #ip
-print(GeoData) # assocatied data with ip, state, city, isp, long, lat
-CurrentTimestamp = time.time() #time stamp in form of seconds since 
-print(CurrentTimestamp) # format(Unix Timestamp): 1761968303.5559223 , seconds since January 1, 1970, 00:00:00 UTC
+    publicIP = getPublicIp()
+    GeoData = getGeoData(publicIP)
+    print(publicIP) #ip
+    print(GeoData) # assocatied data with ip, state, city, isp, long, lat
+    CurrentTimestamp = time.time() #time stamp in form of seconds since 
+    print(CurrentTimestamp) # format(Unix Timestamp): 1761968303.5559223 , seconds since January 1, 1970, 00:00:00 UTC
 
 
-#Assocaite snake ranked one with "snake bite"
-#only need results, format is for me to look at
-AssocaitedSnakes = GetFormattedSnakeInfo(result)
-#print(AssocaitedSnakes[0])
+    #Assocaite snake ranked one with "snake bite"
+    #only need results, format is for me to look at
+    AssocaitedSnakes = GetFormattedSnakeInfo(result)
+    #print(AssocaitedSnakes[0])
 
-#print(result)
-FirstKey = list(result.keys())[0]
-#print(FirstKey)
+    #print(result)
+    FirstKey = list(result.keys())[0]
+    #print(FirstKey)
 
-#permission again
-#need to make it so its more auth users not just one
-supabase_url: str = os.getenv("SUPABASE_URL")
-supabase_key: str = os.getenv("SUPABASE_KEY")
-supabase: Client = create_client(supabase_url, supabase_key)
+    #permission again
+    #need to make it so its more auth users not just one
+    
 
-#response = (supabase.from_("SnakeBiteInArea")    .insert({"ID": FirstKey, "CountyID": "36045", "TimeStamp":CurrentTimestamp, "Longitude": GeoData["lon"], "Latitude": GeoData["lat"], "FIPS":templist[0] })    .execute())
-
+    response = (supabase.from_("SnakeBiteInArea")    .insert({"ID": FirstKey, "CountyID": "36045", "TimeStamp":CurrentTimestamp, "Longitude": GeoData["lon"], "Latitude": GeoData["lat"], "FIPS":templist[0] })    .execute())
+    return (GeoData["lat"], GeoData["lon"]), CurrentTimestamp
 #to here --------------------------------------------------------------------------------------------------
-#have it return lon and lat of just sorted snake
-
-##Return Snake bites in 20 mile radius?, return name of current county, 
 
 
 
-def calculateLocation():
+
+
+
+#Calcuate latest time, the calculate within a 20 mile radius
+
+#JustGotLatLon, JustGotTimeStamp = addToDatabase()
+#print(JustGotLatLon)
+#(43.0481, -76.1474)
+#(43.0316, -76.1353)
+
+#(lon, lat)
+JustGotLatLon = (43.0481, -76.1474)
+JustGotTimeStamp = 1762009200.56349
+
+#testing section -----------------------------------------
+#to find within ten days subtract 864,000 seconds  z = current - (864000) and then do  z<= (anything in between) <= current
+def testFunc1(): 
+    LastTenDays = JustGotTimeStamp - 864000
+    response = (    supabase.table("SnakeBiteInArea")    .select("ID","Longitude", "Latitude","TimeStamp","BiteID") .gte("TimeStamp", LastTenDays) .execute())
+    #[{'ID': 1, 'Longitude': -76.1353, 'Latitude': 43.0316, 'TimeStamp': 1762009200.56349}, {'ID': 1, 'Longitude': -76.1353, 'Latitude': 43.0316, 'TimeStamp': 1762010934.52464}]
+    data = response.data
+    print(response.data)
+
+    coordsListAndBiteID = [(item['Longitude'], item['Latitude'],item['BiteID']) for item in data]
+    print(coordsListAndBiteID)
+    coordsList = [(lon, lat) for lon, lat,biteID in coordsListAndBiteID]
+    #[(-76.1353, 43.0316, 5), (-76.1353, 43.0316, 6), (-76.1353, 43.0316, 7)]
+    #print(coordsListAndBiteID[0])
+    print(coordsList)
+    #[(-76.1353, 43.0316), (-76.1353, 43.0316), (-76.1353, 43.0316)]
+#testing section----------------------------------------------
+
+#testFunc1()
+
+
+
+#calcaulte location section ---------------------------------------------
+# messy version no biteID output
+def calculateLocation(JustGotLatLon):
     #point1 will need to be a call from supabase, or will need to define it as the long and lat we just got
-    point1 = (43.0481, -76.1474) #syracuse new york
+    point1 = JustGotLatLon
+    #(43.0481, -76.1474) #syracuse new york
+
+    LastTenDays = JustGotTimeStamp - 864000
+    response = (    supabase.table("SnakeBiteInArea")    .select("ID","Longitude", "Latitude","TimeStamp", "BiteID") .gte("TimeStamp", LastTenDays) .execute())
+    #[{'ID': 1, 'Longitude': -76.1353, 'Latitude': 43.0316, 'TimeStamp': 1762009200.56349, 'BiteID': 5}, {'ID': 1, 'Longitude': -76.1353, 'Latitude': 43.0316, 'TimeStamp': 1762010934.52464, 'BiteID': 6}, {'ID': 1, 'Longitude': -76.1353, 'Latitude': 43.0316, 'TimeStamp': 1762011193.01539, 'BiteID': 7}]
+    
+
+    data = response.data
+  
+
+    coordsListAndBiteID = [(item['Longitude'], item['Latitude'],item['BiteID']) for item in data]
+    #[(-76.1353, 43.0316, 5), (-76.1353, 43.0316, 6), (-76.1353, 43.0316, 7)]
+    coordsList = [(lat, lon) for lon, lat, biteID in coordsListAndBiteID]
+    #[(-76.1353, 43.0316), (-76.1353, 43.0316), (-76.1353, 43.0316)]
+    print(coordsList)
 
 
 
     #all Lat,Long within 1-20 miles
-    print()
-
     #will eventually be replaced with points off of database
-    points = [
-        (43.0621, -76.1305),
-        (43.0358, -76.1609),
-        (43.0702, -76.1756),
-        (43.0415, -76.1103),
-        (43.0549, -76.1401),
-        (43.0298, -76.1252),
-        (43.0805, -76.1509),
-        (43.0502, -76.1708),
-        (43.0651, -76.1354),
-        (43.0401, -76.1555),
-        (35.6764, 139.6500)
-    ]
+    
+    # points = [
+    #     (43.0621, -76.1305),
+    #     (43.0358, -76.1609),
+    #     (43.0702, -76.1756),
+    #     (43.0415, -76.1103),
+    #     (43.0549, -76.1401),
+    #     (43.0298, -76.1252),
+    #     (43.0805, -76.1509),
+    #     (43.0502, -76.1708),
+    #     (43.0651, -76.1354),
+    #     (43.0401, -76.1555),
+    #     (35.6764, 139.6500)
+    # ]
 
-    lat0, lon0 = 43.0481, -76.1474
+    #lat0, lon0 = 43.0481, -76.1474
+    #JustGotLatLon = (43.0481, -76.1474)
+    lat0, lon0 = JustGotLatLon
+    print(JustGotLatLon)
     # Create a DataFrame
-    df = pd.DataFrame(points, columns=['lat', 'lon'])
+    #coordsList = points
+    df = pd.DataFrame(coordsList, columns=['lat', 'lon'])
 
     # Vectorized Haversine formula
     lat_rad = np.radians(df['lat'])
@@ -200,11 +254,73 @@ def calculateLocation():
     r = 3956  # Radius of Earth in miles
 
     df['distance_miles'] = c * r
-
-    # Filter points within 10 miles (lat,long)
     within_10_miles = df[df['distance_miles'] <= 10]
 
-    print(within_10_miles)
+    # Filter points within 10 miles (lat,long)
+    coords_within_10 = list(within_10_miles[['lat', 'lon', 'distance_miles']].itertuples(index=False, name=None))
+    #[(43.0621, -76.1305, 1.2889331802821515), (43.0358, -76.1609, 1.088723970948761), (43.0702, -76.1756, 2.0862029497126264), (43.0415, -76.1103, 1.9267182082888692), (43.0549, -76.1401, 0.5967356184350802), (43.0298, -76.1252, 1.6886677225141724), (43.0805, -76.1509, 2.2440213823841115), (43.0502, -76.1708, 1.1895418881573994), (43.0651, -76.1354, 1.3206973663654962), (43.0401, -76.1555, 0.6871404326298617)]
+   # print(coords_within_10)
+
+
+    #print(within_10_miles)
+    return coords_within_10
 
 
 
+coords_within_10 = calculateLocation(JustGotLatLon)
+print(coords_within_10)
+
+
+#output biteID as well
+def calculateLocationClean(JustGotLatLon):
+    """
+    Given a location (lat, lon), find all snake bites in the last 10 days
+    within 10 miles. Returns a list of tuples:
+    (lat, lon, distance_miles, BiteID)
+    """
+    lat0, lon0 = JustGotLatLon
+
+    # 10 days ago in Unix timestamp
+    LastTenDays = JustGotTimeStamp - 864000
+
+    # Query Supabase for bites in the last 10 days
+    response = supabase.table("SnakeBiteInArea")\
+        .select("ID", "Longitude", "Latitude", "TimeStamp", "BiteID")\
+        .gte("TimeStamp", LastTenDays)\
+        .execute()
+
+    data = response.data
+    if not data:
+        return []
+
+    # Convert to consistent (lat, lon) format
+    coordsListAndBiteID = [(item['Latitude'], item['Longitude'], item['BiteID']) for item in data]
+
+    # Create DataFrame
+    df = pd.DataFrame(coordsListAndBiteID, columns=['lat', 'lon', 'BiteID'])
+
+    # Haversine formula
+    lat_rad = np.radians(df['lat'])
+    lon_rad = np.radians(df['lon'])
+    lat0_rad = np.radians(lat0)
+    lon0_rad = np.radians(lon0)
+
+    dlat = lat_rad - lat0_rad
+    dlon = lon_rad - lon0_rad
+    a = np.sin(dlat/2)**2 + np.cos(lat0_rad) * np.cos(lat_rad) * np.sin(dlon/2)**2
+    c = 2 * np.arcsin(np.sqrt(a))
+    r = 3956  # Radius of Earth in miles
+
+    df['distance_miles'] = c * r
+
+    # Filter points within 10 miles
+    within_10_miles = df[df['distance_miles'] <= 10]
+
+    # Return (lat, lon, distance_miles, BiteID)
+    results = list(within_10_miles[['lat', 'lon', 'distance_miles', 'BiteID']].itertuples(index=False, name=None))
+    return results
+
+calculateLocationClean(JustGotLatLon)
+
+
+#end location area ----------------------------------------------------------------------------------------
