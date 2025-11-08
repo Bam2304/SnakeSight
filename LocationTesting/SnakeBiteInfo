@@ -1,0 +1,76 @@
+from collections import defaultdict
+from supabase import create_client, Client
+import import_ipynb
+from LocationTrackFull import formatSnakeLocationInfo, SnakesToDisplay
+#print(SnakesToDisplay)
+#BiteID , Miles Away
+#[(5, 1.2925663265480423), (6, 1.2925663265480423), (7, 1.2925663265480423), (8, 1.2925663265480423), (9, 1.2925663265480423), (10, 1.2925663265480423)]
+
+##supabase built in library for python
+def SnakeBiteDataFromDatabase():
+    supabase_url: str = "https://lgvelnkhepuokjbacqqx.supabase.co"
+    supabase_key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxndmVsbmtoZXB1b2tqYmFjcXF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMTg1MzMsImV4cCI6MjA3Mzc5NDUzM30.E02uu9ATxmtKkIVHBT4EoD9k6VGQpHIQ6MGVmxgF81Q"
+    supabase: Client = create_client(supabase_url, supabase_key)
+
+
+    #Gets Data From the selected Tables in Supabase
+    response = supabase.table("SnakeBiteInArea").select("*").execute() 
+    DataSnakeBite = response.data
+    #print(DataSnakeBite)
+
+    
+    
+    neededCountyNamesBiteID = [(row['CountyID'],row['BiteID']) for row in DataSnakeBite]
+    print(neededCountyNamesBiteID)
+    #prints out a list of tuples of countyID and BiteID
+    #[(36045, 6), (36045, 7), (36045, 8), (36045, 9), (36045, 10), (36067, 11), (36067, 12), (36045, 5)]
+
+    #type any
+    response = supabase.table("NewYorkCounties").select("*").execute() 
+    DataCountyNames = response.data
+    #returns List of Dictionary of County Names and CountyID
+    print(DataCountyNames)
+    #[{'CountyID': 36000, 'CountyName': 'NewYork'}, {'CountyID': 36001, 'CountyName': 'AlbanyCounty'}
+
+    print()
+
+    # response = supabase.table("AlternativeCountyNames").select("*").execute() 
+    # DataAltCountyNames = response.data
+
+    
+   # print(DataCountyNames)
+    # print(DataAltCountyNames)
+
+    #will remove any row that contains a null value
+    NoNullNewYorkCounties = [
+        {k: v for k, v in row.items() if v is not None}
+        for row in response.data
+    ]
+
+    print(NoNullNewYorkCounties)
+    #List of Dict{}
+    #[{'CountyID': 36000, 'CountyName': 'NewYork'}, {'CountyID': 36001, 'CountyName': 'AlbanyCounty'}
+
+
+    #print(neededCountyNamesBiteID)
+    #[(36045, 6), (36045, 7), (36045, 8), (36045, 9), (36045, 10), (36067, 11), (36067, 12), (36045, 5)]
+
+    OnlyNeededNames = [tupleCountyIDBiteID[0] for tupleCountyIDBiteID in neededCountyNamesBiteID]
+    #print(OnlyNeededNames)
+    #countyID
+    #[36045, 36045, 36045, 36045, 36045, 36067, 36067, 36045]
+
+
+    #may need to rename for clarity, only really fetches county name and combines with
+    OnlyNeededInfo = [
+    (item['CountyName'], # 
+     bite_id)
+    for county_id, bite_id in neededCountyNamesBiteID
+    for item in NoNullNewYorkCounties
+    if item['CountyID'] == county_id
+    ]
+    print(OnlyNeededInfo)
+    #[('JeffersonCounty', 36045, 6), ('JeffersonCounty', 36045, 7), ('JeffersonCounty', 36045, 8), ('JeffersonCounty', 36045, 9), ('JeffersonCounty', 36045, 10), ('OnondagaCounty', 36067, 11), ('OnondagaCounty', 36067, 12), ('JeffersonCounty', 36045, 5)]
+
+SnakeBiteDataFromDatabase()
+
