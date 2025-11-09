@@ -132,6 +132,10 @@ class SecondPage(tk.Frame):
         self.redBox = tk.IntVar()
         self.orangeBox = tk.IntVar()
         self.threeOrMoreBox = tk.IntVar()
+        self.spots = tk.IntVar()
+        self.checker = tk.IntVar()
+        self.length = tk.IntVar()
+        self.width = tk.IntVar()
 
         #creating the checkboxes for selecting snake color
         tk.Checkbutton(self, text="Brown", variable=self.brownBox).place(x=20, y=120)
@@ -142,6 +146,10 @@ class SecondPage(tk.Frame):
         tk.Checkbutton(self, text="Red", variable=self.redBox).place(x=20, y=270)
         tk.Checkbutton(self, text="Orange", variable=self.orangeBox).place(x=20, y=300)
         tk.Checkbutton(self, text="3 or More Colors", variable=self.threeOrMoreBox).place(x=20, y=330)
+        tk.Checkbutton(self, text="Spots", variable=self.spots).place(x=100, y=120)
+        tk.Checkbutton(self, text="Checker Pattern", variable=self.checker).place(x=100, y=150)
+        tk.Checkbutton(self, text="Length Stripes", variable=self.length).place(x=100, y=180)
+        tk.Checkbutton(self, text="Width Stripes", variable=self.width).place(x=100, y=210)
 
     def updatePage(self):
         """Optional refresh when shown."""
@@ -170,6 +178,14 @@ class SecondPage(tk.Frame):
             qnaResults.append(7)
         if self.threeOrMoreBox:
             qnaResults.append(8)
+        if self.checker:
+            qnaResults.append(9)
+        if self.spots:
+            qnaResults.append(10)
+        if self.length:
+            qnaResults.append(11)
+        if self.width:
+            qnaResults.append(12)
         #def ChangeIntoSeprateInfo(ResultInput)
         # Example of text from some external source
         #"\n".join(ResultOutput)
