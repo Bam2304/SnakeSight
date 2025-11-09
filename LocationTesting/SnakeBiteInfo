@@ -1,13 +1,28 @@
 from collections import defaultdict
 from supabase import create_client, Client
 import import_ipynb
-from LocationTrackFull import formatSnakeLocationInfo, SnakesToDisplay
+from LocationTrackFull import formatSnakeLocationInfo, SnakesToDisplay, DataToDisplay
+from ResultsPageOutPutData import output, resultNumberForm
+
 #print(SnakesToDisplay)
 #BiteID , Miles Away
 #[(5, 1.2925663265480423), (6, 1.2925663265480423), (7, 1.2925663265480423), (8, 1.2925663265480423), (9, 1.2925663265480423), (10, 1.2925663265480423)]
 
+#print(DataToDisplay)
+#[(43.0316, -76.1353, 1.2925663265480423, 6), (43.0316, -76.1353, 1.2925663265480423, 7), (43.0316, -76.1353, 1.2925663265480423, 8), (43.0316, -76.1353, 1.2925663265480423, 9), (43.0316, -76.1353, 1.2925663265480423, 10), (43.0316, -76.1353, 1.2925663265480423, 11), (43.0316, -76.1353, 1.2925663265480423, 12), (43.0481, -76.1474, 0.0, 5)]
+
+
+
+# print(output)
+#['#1 BlackRat  Status: Non-venomous Daily Activity: MostlyDiurnal Other Names: CentralRatsnake , EasternRatsnake , PantherophisAlleghanie', '#2 EasternGarter  Status: Non-venomous Daily Activity: Diurnal Other Names: CommonGarter , ThamnophisSirtalis', '#3 EasternHognose  Status: Non-venomous Daily Activity: Diurnal Other Names: HeterodonPlatirhinos , PuffAdder , HissingAdder , SpreadingAdder , BlowViper , HissingSandSnake', '#4 EasternMassuga  Status: Venomous Daily Activity: Diurnal Other Names:  SistrurusCatenatus', '#5 NorthernWater  Status: Non-venomous Daily Activity: MostlyNocturnal Other Names: CommonWaterSnake , NerodiaSipedon']
+
+# print(result)
+#{1: 10.0, 2: 9.0, 3: 8.0, 4: 7.0, 5: 6.0}
+
+
+
 ##supabase built in library for python
-def SnakeBiteDataFromDatabase():
+def SnakeBiteDataFromDatabase(SnakeResultNumInput , SnakeResultDetailOutput):
     supabase_url: str = "https://lgvelnkhepuokjbacqqx.supabase.co"
     supabase_key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxndmVsbmtoZXB1b2tqYmFjcXF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTgyMTg1MzMsImV4cCI6MjA3Mzc5NDUzM30.E02uu9ATxmtKkIVHBT4EoD9k6VGQpHIQ6MGVmxgF81Q"
     supabase: Client = create_client(supabase_url, supabase_key)
@@ -20,19 +35,21 @@ def SnakeBiteDataFromDatabase():
 
     
     
-    neededCountyNamesBiteID = [(row['CountyID'],row['BiteID']) for row in DataSnakeBite]
-    print(neededCountyNamesBiteID)
+    neededCountyNamesBiteIDSnakeID = [(row['CountyID'],row['BiteID'],row['ID']) for row in DataSnakeBite]
+    #print(neededCountyNamesBiteID)
     #prints out a list of tuples of countyID and BiteID
     #[(36045, 6), (36045, 7), (36045, 8), (36045, 9), (36045, 10), (36067, 11), (36067, 12), (36045, 5)]
+    #print(neededCountyNamesBiteIDSnakeID)
+
 
     #type any
     response = supabase.table("NewYorkCounties").select("*").execute() 
     DataCountyNames = response.data
     #returns List of Dictionary of County Names and CountyID
-    print(DataCountyNames)
+    #print(DataCountyNames)
     #[{'CountyID': 36000, 'CountyName': 'NewYork'}, {'CountyID': 36001, 'CountyName': 'AlbanyCounty'}
 
-    print()
+    
 
     # response = supabase.table("AlternativeCountyNames").select("*").execute() 
     # DataAltCountyNames = response.data
@@ -47,7 +64,7 @@ def SnakeBiteDataFromDatabase():
         for row in response.data
     ]
 
-    print(NoNullNewYorkCounties)
+    #print(NoNullNewYorkCounties)
     #List of Dict{}
     #[{'CountyID': 36000, 'CountyName': 'NewYork'}, {'CountyID': 36001, 'CountyName': 'AlbanyCounty'}
 
@@ -55,22 +72,123 @@ def SnakeBiteDataFromDatabase():
     #print(neededCountyNamesBiteID)
     #[(36045, 6), (36045, 7), (36045, 8), (36045, 9), (36045, 10), (36067, 11), (36067, 12), (36045, 5)]
 
-    OnlyNeededNames = [tupleCountyIDBiteID[0] for tupleCountyIDBiteID in neededCountyNamesBiteID]
+    OnlyNeededNames = [tupleCountyIDBiteID[0] for tupleCountyIDBiteID in neededCountyNamesBiteIDSnakeID]
     #print(OnlyNeededNames)
     #countyID
     #[36045, 36045, 36045, 36045, 36045, 36067, 36067, 36045]
 
+    
 
     #may need to rename for clarity, only really fetches county name and combines with
     OnlyNeededInfo = [
     (item['CountyName'], # 
-     bite_id)
-    for county_id, bite_id in neededCountyNamesBiteID
+     bite_id,ID,county_id)
+    for county_id, bite_id, ID in neededCountyNamesBiteIDSnakeID
     for item in NoNullNewYorkCounties
     if item['CountyID'] == county_id
     ]
-    print(OnlyNeededInfo)
-    #[('JeffersonCounty', 36045, 6), ('JeffersonCounty', 36045, 7), ('JeffersonCounty', 36045, 8), ('JeffersonCounty', 36045, 9), ('JeffersonCounty', 36045, 10), ('OnondagaCounty', 36067, 11), ('OnondagaCounty', 36067, 12), ('JeffersonCounty', 36045, 5)]
 
-SnakeBiteDataFromDatabase()
+   # print(OnlyNeededInfo)
+    #[('JeffersonCounty', 6, 1, 36045), ('JeffersonCounty', 7, 1, 36045), ('JeffersonCounty', 8, 1, 36045), ('JeffersonCounty', 9, 1, 36045), ('JeffersonCounty', 10, 1, 36045), ('OnondagaCounty', 11, 1, 36067), ('OnondagaCounty', 12, 1, 36067), ('JeffersonCounty', 5, 1, 36045)]
+    #[(CountyName, BiteID, SnakeID, CountyID)]
+
+
+    #result = {1: 10.0, 2: 9.0, 3: 8.0, 4: 7.0, 5: 6.0}
+    FinalResult = SnakeResultNumInput 
+    FinalOutput  = SnakeResultDetailOutput
+    
+    #output = ['#1 BlackRat  Status: Non-venomous Daily Activity: MostlyDiurnal Other Names: CentralRatsnake , EasternRatsnake , PantherophisAlleghanie', '#2 EasternGarter  Status: Non-venomous Daily Activity: Diurnal Other Names: CommonGarter , ThamnophisSirtalis', '#3 EasternHognose  Status: Non-venomous Daily Activity: Diurnal Other Names: HeterodonPlatirhinos , PuffAdder , HissingAdder , SpreadingAdder , BlowViper , HissingSandSnake', '#4 EasternMassuga  Status: Venomous Daily Activity: Diurnal Other Names:  SistrurusCatenatus', '#5 NorthernWater  Status: Non-venomous Daily Activity: MostlyNocturnal Other Names: CommonWaterSnake , NerodiaSipedon']
+    CombinedOutput = []
+
+    # For demonstration, let’s assign all bite records to every snake — 
+    # you could filter them based on real relationships later.
+    
+    
+
+    
+
+    if len(FinalResult) == len(FinalOutput):
+        KeysList = list(FinalResult.keys())
+        count = 0
+        for item in FinalResult:
+            CombinedOutput.append((KeysList[count],FinalOutput[count]))
+            count += 1
+    
+
+
+    # --- Pretty print ---
+    # print("\n--- Final Combined Snake Data (Grouped by Snake) ---")
+    # for entry in CombinedOutput:
+    #     print(f"\n{entry['SnakeInfo']}")
+    #     for b in entry["Bites"]:
+    #         print(f"  → County: {b['County']} | Distance: {b['Distance']} miles")
+
+    #combined output
+    #(1, '#1 BlackRat  Status: Non-venomous Daily Activity: MostlyDiurnal Other Names: CentralRatsnake , EasternRatsnake , PantherophisAlleghanie')
+    #(2, '#2 EasternGarter  Status: Non-venomous Daily Activity: Diurnal Other Names: CommonGarter , ThamnophisSirtalis')
+    #(3, '#3 EasternHognose  Status: Non-venomous Daily Activity: Diurnal Other Names: HeterodonPlatirhinos , PuffAdder , HissingAdder , SpreadingAdder , BlowViper , HissingSandSnake')
+    #(4, '#4 EasternMassuga  Status: Venomous Daily Activity: Diurnal Other Names:  SistrurusCatenatus')
+    #(5, '#5 NorthernWater  Status: Non-venomous Daily Activity: MostlyNocturnal Other Names: CommonWaterSnake , NerodiaSipedon')
+    
+
+    #print(DataToDisplay)
+    #[(43.0316, -76.1353, 1.2925663265480423, 6), (43.0316, -76.1353, 1.2925663265480423, 7), (43.0316, -76.1353, 1.2925663265480423, 8), (43.0316, -76.1353, 1.2925663265480423, 9), (43.0316, -76.1353, 1.2925663265480423, 10), (43.0316, -76.1353, 1.2925663265480423, 11), (43.0316, -76.1353, 1.2925663265480423, 12), (43.0481, -76.1474, 0.0, 5)]
+    
+
+    # print(OnlyNeededInfo)
+    #[('JeffersonCounty', 6, 1, 36045), ('JeffersonCounty', 7, 1, 36045), ('JeffersonCounty', 8, 1, 36045), ('JeffersonCounty', 9, 1, 36045), ('JeffersonCounty', 10, 1, 36045), ('OnondagaCounty', 11, 1, 36067), ('OnondagaCounty', 12, 1, 36067), ('JeffersonCounty', 5, 1, 36045)]
+    #[(CountyName, BiteID, SnakeID, CountyID)]
+    
+    # print(CombinedOutput)
+    # print()
+    # count = 0
+    # for SnakeBiteInfo in OnlyNeededInfo:
+    #     if CombinedOutput[count][0] == SnakeBiteInfo[2]:
+            
+    #         print('Yay')
+    #         # CombinedOutput
+            
+    MergedOutput = []
+
+    for snake_id, snake_info in CombinedOutput:
+        # Find all bites that match this snake_id
+        related_bites = [
+            {
+                "County": county,
+                "BiteID": bite_id,
+                "CountyID": county_id
+            }
+            for (county, bite_id, sid, county_id) in OnlyNeededInfo
+            if sid == snake_id
+        ]
+
+        MergedOutput.append({
+            "SnakeID": snake_id,
+            "SnakeInfo": snake_info,
+            "Bites": related_bites
+        })
+
+
+
+
+
+    #print(MergedOutput)
+    return MergedOutput
+
+
+
+TestOutput = SnakeBiteDataFromDatabase(resultNumberForm , output)
+
+
+for entry in TestOutput:
+        print(f"SnakeID: {entry['SnakeID']}")
+        print(f"Info: {entry['SnakeInfo']}")
+        print("Bites:")
+        if len(entry["Bites"]) != 0:
+            for bite in entry["Bites"]:
+                print(f"  - {bite}")
+        else:
+            print(f"-None")
+
+        print()
 
