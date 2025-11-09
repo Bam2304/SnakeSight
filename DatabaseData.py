@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 load_dotenv()
 #^supabase built in library for python
 def DataFromDatabase():
-    supabase_url: str = os.getenv("SUPABASE_URL")
-    supabase_key: str = os.getenv("SUPABASE_KEY")
+    supabase_url: str = "https://lgvelnkhepuokjbacqqx.supabase.co" #os.getenv("SUPABASE_URL")
+    supabase_key: str = "sb_publishable_VwY13z1yliMQ698Km0fNYA_tgpwqZab" #os.getenv("SUPABASE_KEY")
     supabase: Client = create_client(supabase_url, supabase_key)
 
 
