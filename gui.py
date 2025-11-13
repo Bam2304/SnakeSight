@@ -46,12 +46,22 @@ class MainPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.configure(background='orange')
+        self.configure(background="#6AB187")
         
-        tk.Label(self, text="Welcome to Snake Sight", font=("Arial", 18)).place(x=220, y=10)
+        tk.Label(self, text="Welcome to Snake Sight!", font=("Arial", 23), 
+                 background="#20948B").place(x=193, y=10)
+        
+        # Image to look a little nicer
+        # credit: https://stock.adobe.com/search?k=%22funny+snake%22
+        snakeImage = Image.open("snakeSightIm.jpg")  
+        snakeImage = snakeImage.resize((175, 175))
+        self.snakePhoto = ImageTk.PhotoImage(snakeImage)
+        tk.Label(self, image=self.snakePhoto).place(x=30, y=140)
+
+
 
         # Status label (not the image itself)
-        self.statusLabel = tk.Label(self, text="No image submitted")
+        self.statusLabel = tk.Label(self, text="No Image", background="#20948B")
         self.statusLabel.place(x=250, y=100)
 
         # Upload button
@@ -78,7 +88,7 @@ class MainPage(tk.Frame):
             filetypes=[("Image Files", "*.png *.jpg *.jpeg *.gif")]
         )
         if filePath:
-            # Load & store image (not displayed)
+            # Load & store image 
             tempImg = Image.open(filePath)
             try:
                 self.controller.sharedImage = ImageTk.PhotoImage(tempImg)
@@ -100,16 +110,17 @@ class SecondPage(tk.Frame):
         
         super().__init__(parent)
         self.controller = controller
-        self.configure(background='orange')
+        self.configure(background="#6AB187")
 
-        tk.Label(self, text="Q&A", font=("Arial", 18)).place(x=275, y=10)
+        tk.Label(self, text="Q&A", font=("Arial", 18), 
+                 background="#20948B").place(x=275, y=10)
 
         # Back button
         backButton = tk.Button(
             self, text="Back to Main Page",
             command=lambda: controller.showFrame("MainPage")
         )
-        #back_btn.pack(pady=250, padx=20)
+        
         backButton.place(x=18, y=10)
 
         #Get results button
@@ -120,8 +131,8 @@ class SecondPage(tk.Frame):
         resultsButton.place(x=425, y=10)
 
         #label for selecting colors
-        tk.Label(self, text="What Color Was The Snake? (Can Select Multiple Colors)", 
-                 font=("Arial", 14)).place(x=20, y=70)
+        tk.Label(self, text="What Did The Snake Look Like? (Can Select Multiple)", 
+                 font=("Arial", 17), background="#20948B").place(x=20, y=70)
 
         #variables to hold states of checkboxes
         self.brownBox = tk.IntVar()
@@ -216,9 +227,9 @@ class InfoPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.configure(background='blue')
+        self.configure(background='red')
 
-        tk.Label(self, text="Disclaimer", font=("Arial", 18)).place(x=245, y=10)
+        tk.Label(self, text="Disclaimer!", font=("Arial", 18)).place(x=245, y=10)
         
         #disclaimer message for info page
         disclaimerMessage = "Warning: This app is for demonstration purposes only. " \
@@ -244,11 +255,19 @@ class ResultsPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.configure(background='gray')
+        self.configure(background="#6AB187")
 
          
-        tk.Label(self, text="Your Results:", font=("Arial", 18)).place(x=225, y=10)
+        tk.Label(self, text="Your Results:", font=("Arial", 22), 
+                 background="#20948B").place(x=225, y=15)
         
+        # Back button
+        backButton = tk.Button(
+            self, text="Back to Q&A Page",
+            command=lambda: controller.showFrame("SecondPage")
+        )
+        
+        backButton.place(x=18, y=10)
         
         #text area for the output text
         self.outputTextArea = tk.Text(
@@ -272,5 +291,5 @@ class ResultsPage(tk.Frame):
         pass
 
 if __name__ == "__main__":
-    app = App()
+    app = App()  # instantiate and run the app
     app.mainloop()
