@@ -21,22 +21,14 @@ def testQuestionaire( qnaResults ):
 
 
     checker = True
-    tracker = []
     keyIndex = 0
         
     for i in qnaResults:
-        # Skip if already processed or invalid
-        if qnaResults(i) in tracker:
-            continue
-        if qnaResults(i).isdigit() and (int(qnaResults(i)) > 23 or int(qnaResults(i)) < 1):
-            continue
-        elif qnaResults(i).isdigit():
-            tracker.append(qnaResults(i))
-            keys = list(scores.keys())
-            for i in range(1, len(scores) + 1):
-                key = keys[i-1]
-                currentVal = scores[key]
-                scores[key] = float(currentVal) + float(everyLine[i][int(qnaResults(i))])
+        keys = list(scores.keys())
+        for i in range(1, len(scores) + 1):
+            key = keys[i-1]
+            currentVal = scores[key]
+            scores[key] = float(currentVal) + float(everyLine[i])
         
     checker = False  # End the while loop
 
