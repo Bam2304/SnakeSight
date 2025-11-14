@@ -1,31 +1,9 @@
 import sys
 import os
 import csv
-import ResultsPageOutPutData
 
+def testQuestionaire( qnaResults ):
 
-def loadResultsDirectly():
-    # Get the result from the Python file and convert it to work with current CSV Reader format
-    if hasattr(ResultsPageOutPutData, 'result'):
-        rawResult = ResultsPageOutPutData.result
-        
-        # Convert to CSV Reader format (handles index 12 skip)
-        convertedResults = {}
-        for snakeId, score in rawResult.items():
-            snakeId = int( snakeId )
-            if snakeId < 12:
-                csvKey = snakeId
-            else:
-                csvKey = snakeId + 1  # Skip index 12
-            convertedResults[ csvKey ] = float( score )
-        
-        return convertedResults
-    else:
-        return None
-
-def main():
-    # Load external results
-    externalResults = loadResultsDirectly()
     
     count = 0
     everyLine = []
@@ -41,28 +19,24 @@ def main():
                 scores[lines[0]] = 0
             everyLine.append(tempList)
 
-    # Process external results through the questionnaire logic
-        # Use external results - process them through the questionnaire logic
+
     checker = True
     tracker = []
-    externalKeys = list(externalResults.keys())
     keyIndex = 0
         
-    for externalKey in externalKeys:
-        userData = str(externalKey)
-            
+    for i in qnaResults:
         # Skip if already processed or invalid
-        if userData in tracker:
+        if qnaResults(i) in tracker:
             continue
-        if userData.isdigit() and (int(userData) > 23 or int(userData) < 1):
+        if qnaResults(i).isdigit() and (int(qnaResults(i)) > 23 or int(qnaResults(i)) < 1):
             continue
-        elif userData.isdigit():
-            tracker.append(userData)
+        elif qnaResults(i).isdigit():
+            tracker.append(qnaResults(i))
             keys = list(scores.keys())
             for i in range(1, len(scores) + 1):
                 key = keys[i-1]
                 currentVal = scores[key]
-                scores[key] = float(currentVal) + float(everyLine[i][int(userData)])
+                scores[key] = float(currentVal) + float(everyLine[i][int(qnaResults(i))])
         
     checker = False  # End the while loop
 
