@@ -147,6 +147,15 @@ class SecondPage(tk.Frame):
         self.length = tk.IntVar()
         self.width = tk.IntVar()
 
+        self.lessThan12 = tk.IntVar()
+        self.between12And24 = tk.IntVar()
+        self.between24And36 = tk.IntVar()
+        self.flatHead = tk.IntVar()
+        self.roundHead = tk.IntVar()
+        self.rattle = tk.IntVar()
+        self.darkSpots = tk.IntVar()
+        self.lightSpots = tk.IntVar()
+
         #creating the checkboxes for selecting snake color
         tk.Checkbutton(self, text="Brown", variable=self.brownBox).place(x=20, y=120)
         tk.Checkbutton(self, text="Black", variable=self.blackBox).place(x=20, y=150)
@@ -155,11 +164,22 @@ class SecondPage(tk.Frame):
         tk.Checkbutton(self, text="Green", variable=self.greenBox).place(x=20, y=240)
         tk.Checkbutton(self, text="Red", variable=self.redBox).place(x=20, y=270)
         tk.Checkbutton(self, text="Orange", variable=self.orangeBox).place(x=20, y=300)
-        tk.Checkbutton(self, text="3 or More Colors", variable=self.threeOrMoreBox).place(x=20, y=330)
+        tk.Checkbutton(self, text="3 or More Colors", 
+                       variable=self.threeOrMoreBox).place(x=20, y=330)
+        
         tk.Checkbutton(self, text="Spots", variable=self.spots).place(x=100, y=120)
         tk.Checkbutton(self, text="Checker Pattern", variable=self.checker).place(x=100, y=150)
         tk.Checkbutton(self, text="Length Stripes", variable=self.length).place(x=100, y=180)
         tk.Checkbutton(self, text="Width Stripes", variable=self.width).place(x=100, y=210)
+        tk.Checkbutton(self, text="Less Than 12 Inches", variable=self.lessThan12).place(x=100, y=240)
+        tk.Checkbutton(self, text="Between 12 and 24 Inches", variable=self.between12And24).place(x=100, y=270)
+        tk.Checkbutton(self, text="Between 24 and 36 Inches", variable=self.between24And36).place(x=100, y=300)
+        tk.Checkbutton(self, text="Flat Head", variable=self.flatHead).place(x=240, y=330)
+
+        tk.Checkbutton(self, text="Round Head", variable=self.roundHead).place(x=240, y=120)
+        tk.Checkbutton(self, text="Rattle", variable=self.rattle).place(x=240, y=150)
+        tk.Checkbutton(self, text="Dark Spots", variable=self.darkSpots).place(x=240, y=180)
+        tk.Checkbutton(self, text="Light Spots", variable=self.lightSpots).place(x=240, y=210)
 
     def updatePage(self):
         """Optional refresh when shown."""
@@ -196,9 +216,24 @@ class SecondPage(tk.Frame):
             qnaResults.append(11)
         if self.width:
             qnaResults.append(12)
+        if self.lessThan12:
+            qnaResults.append(13)
+        if self.between12And24:
+            qnaResults.append(14)
+        if self.between24And36:
+            qnaResults.append(15)
+        if self.flatHead:
+            qnaResults.append(16)
+        if self.roundHead:
+            qnaResults.append(17)
+        if self.rattle:
+            qnaResults.append(18)
+        if self.darkSpots:
+            qnaResults.append(19)
+        if self.lightSpots:
+            qnaResults.append(20)
 
         OUTPUTResult = CSVReader.testQuestionaire(qnaResults)
-        #OUTPUTResult = {1:10.0, 2:9.0 , 3:8.0 , 4:7.0 , 5:6.0}
         OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) #List[Dict{}]
 
         
