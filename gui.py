@@ -4,9 +4,8 @@ from PIL import Image, ImageTk
 #pip install import-ipynb
 #import import_ipynb #allows importing of notebook files, should not need if using just .py files
 import ResultsPageOutPutData
+import CSVReader
 
-OUTPUTResult = {1:10.0, 2:9.0 , 3:8.0 , 4:7.0 , 5:6.0}#remove when integrating with actual results page
-OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) #List[Dict{}]
 
 
 class App(tk.Tk):
@@ -197,21 +196,15 @@ class SecondPage(tk.Frame):
             qnaResults.append(11)
         if self.width:
             qnaResults.append(12)
-        #def ChangeIntoSeprateInfo(ResultInput)
-        # Example of text from some external source
-        #"\n".join(ResultOutput)
+
+        OUTPUTResult = CSVReader.testQuestionaire(qnaResults)
+        #OUTPUTResult = {1:10.0, 2:9.0 , 3:8.0 , 4:7.0 , 5:6.0}
+        OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) #List[Dict{}]
+
+        
 
         resultText = "\n".join(OUTPUTResultOutput)
-        # (
-        #     "Analysis Complete!\n\n"
-        #     "Snake Type: Eastern Diamondback Rattlesnake\n"
-        #     "Venom Severity: High\n"
-        #     "Recommended Action: Seek immediate medical attention.\n\n"
-        #     "Additional Info:\n"
-        #     "The Eastern Diamondback is the largest venomous snake in North America."
-            
-        # )
-
+        
         # Add text to ResultsPage
         resultsPage.outputTextArea.delete("1.0", tk.END)  # clear old text 
         

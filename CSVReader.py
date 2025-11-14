@@ -1,31 +1,9 @@
 import sys
 import os
 import csv
-import ResultsPageOutPutData
 
+def testQuestionaire( qnaResults ):
 
-def loadResultsDirectly():
-    # Get the result from the Python file and convert it to work with current CSV Reader format
-    if hasattr(ResultsPageOutPutData, 'result'):
-        rawResult = ResultsPageOutPutData.result
-        
-        # Convert to CSV Reader format (handles index 12 skip)
-        convertedResults = {}
-        for snakeId, score in rawResult.items():
-            snakeId = int( snakeId )
-            if snakeId < 12:
-                csvKey = snakeId
-            else:
-                csvKey = snakeId + 1  # Skip index 12
-            convertedResults[ csvKey ] = float( score )
-        
-        return convertedResults
-    else:
-        return None
-
-def main():
-    # Load external results
-    externalResults = loadResultsDirectly()
     
     count = 0
     everyLine = []
@@ -35,34 +13,23 @@ def main():
         csvFile = csv.reader(file)
         for lines in csvFile:  # makes a giant list of lists where each line in its own list
             tempList = []
-            for i in range(0, 24):  # this number has to be exact or index out of range 
-                tempList.append(lines[i])
             if(lines[0] != "Snake"):  # makes a dict that will keep track of snake and thier current score
                 scores[lines[0]] = 0
-            everyLine.append(tempList)
+                for i in range(0, 24):  # this number has to be exact or index out of range 
+                    tempList.append(lines[i])
+            if len(tempList) > 0:
+                everyLine.append(tempList)
 
-    # Process external results through the questionnaire logic
-        # Use external results - process them through the questionnaire logic
+    print(everyLine)
     checker = True
-    tracker = []
-    externalKeys = list(externalResults.keys())
     keyIndex = 0
         
-    for externalKey in externalKeys:
-        userData = str(externalKey)
-            
-        # Skip if already processed or invalid
-        if userData in tracker:
-            continue
-        if userData.isdigit() and (int(userData) > 23 or int(userData) < 1):
-            continue
-        elif userData.isdigit():
-            tracker.append(userData)
-            keys = list(scores.keys())
-            for i in range(1, len(scores) + 1):
-                key = keys[i-1]
-                currentVal = scores[key]
-                scores[key] = float(currentVal) + float(everyLine[i][int(userData)])
+    for i in range(len(qnaResults)):
+        keys = list(scores.keys())
+        for j in range(1, len(scores) + 1):
+            key = keys[j-1]
+            currentVal = scores[key]
+            scores[key] = float(currentVal) + float(everyLine[i][int(qnaResults[i])])
         
     checker = False  # End the while loop
 
