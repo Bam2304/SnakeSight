@@ -20,7 +20,6 @@ def testQuestionaire( qnaResults ):
             if len(tempList) > 0:
                 everyLine.append(tempList)
 
-    #print(everyLine)
     checker = True
     keyIndex = 0
         

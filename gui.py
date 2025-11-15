@@ -192,49 +192,50 @@ class SecondPage(tk.Frame):
         controller = self.controller
         resultsPage = controller.frames["ResultsPage"]
         qnaResults = []
-        if self.brownBox: #if the checkbox is clicked, append the corresponding score
+
+        if self.brownBox.get(): #if the checkbox is clicked, append the corresponding score
             qnaResults.append(1)
-        if self.blackBox:
+        if self.blackBox.get():
             qnaResults.append(2)
-        if self.whiteBox:
+        if self.whiteBox.get():
             qnaResults.append(3)
-        if self.yellowBox:
+        if self.yellowBox.get():
             qnaResults.append(4)
-        if self.orangeBox:
+        if self.orangeBox.get():
             qnaResults.append(5)
-        if self.redBox:
+        if self.redBox.get():
             qnaResults.append(6)
-        if self.greenBox:
+        if self.greenBox.get():
             qnaResults.append(7)
-        if self.threeOrMoreBox:
+        if self.threeOrMoreBox.get():
             qnaResults.append(8)
-        if self.checker:
+        if self.checker.get():
             qnaResults.append(9)
-        if self.spots:
+        if self.spots.get():
             qnaResults.append(10)
-        if self.length:
+        if self.length.get():
             qnaResults.append(11)
-        if self.width:
+        if self.width.get():
             qnaResults.append(12)
-        if self.lessThan12:
+        if self.lessThan12.get():
             qnaResults.append(13)
-        if self.between12And24:
+        if self.between12And24.get():
             qnaResults.append(14)
-        if self.between24And36:
+        if self.between24And36.get():
             qnaResults.append(15)
-        if self.flatHead:
+        if self.flatHead.get():
             qnaResults.append(16)
-        if self.roundHead:
+        if self.roundHead.get():
             qnaResults.append(17)
-        if self.rattle:
+        if self.rattle.get():
             qnaResults.append(18)
-        if self.darkSpots:
+        if self.darkSpots.get():
             qnaResults.append(19)
-        if self.lightSpots:
+        if self.lightSpots.get():
             qnaResults.append(20)
 
         OUTPUTResult = CSVReader.testQuestionaire(qnaResults)
-        OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) #List[Dict{}]
+        OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) 
 
         
 
