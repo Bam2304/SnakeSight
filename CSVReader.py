@@ -19,23 +19,20 @@ def testQuestionaire( qnaResults ):
                     tempList.append(lines[i])
             if len(tempList) > 0:
                 everyLine.append(tempList)
-
-    checker = True
-    keyIndex = 0
         
     for i in range(len(qnaResults)):
         keys = list(scores.keys())
-        for j in range(1, len(scores) + 1):
-            key = keys[j-1]
+        for j in range(0, len(scores)):
+            key = keys[j]
             currentVal = scores[key]
-            scores[key] = float(currentVal) + float(everyLine[i][int(qnaResults[i])])
+            scores[key] = float(currentVal) + float(everyLine[j][(qnaResults[i])])
+            # Fixed line to correctly assign points to the correct snake
         
-    checker = False  # End the while loop
 
-        # now to organize by most points to least points
-        # skips index 12 
+
+    # now to organize by most points to least points
+    # skips index 12 
     rating = {}
-    indexes = []
 
     values = list(scores.values())
     value = list(scores.values())  # making a second list to get index value to for return 
