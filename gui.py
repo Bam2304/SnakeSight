@@ -142,7 +142,7 @@ class SecondPage(tk.Frame):
         self.redBox = tk.IntVar()
         self.orangeBox = tk.IntVar()
         self.threeOrMoreBox = tk.IntVar()
-        self.spots = tk.IntVar()
+        self.greaterThan36 = tk.IntVar()
         self.checker = tk.IntVar()
         self.length = tk.IntVar()
         self.width = tk.IntVar()
@@ -166,8 +166,8 @@ class SecondPage(tk.Frame):
         tk.Checkbutton(self, text="Orange", variable=self.orangeBox).place(x=20, y=300)
         tk.Checkbutton(self, text="3 or More Colors", 
                        variable=self.threeOrMoreBox).place(x=20, y=330)
-        
-        tk.Checkbutton(self, text="Spots", variable=self.spots).place(x=100, y=120)
+
+        tk.Checkbutton(self, text="> 36 In.", variable=self.greaterThan36).place(x=100, y=120)
         tk.Checkbutton(self, text="Checker Pattern", variable=self.checker).place(x=100, y=150)
         tk.Checkbutton(self, text="Length Stripes", variable=self.length).place(x=100, y=180)
         tk.Checkbutton(self, text="Width Stripes", variable=self.width).place(x=100, y=210)
@@ -210,19 +210,19 @@ class SecondPage(tk.Frame):
         if self.threeOrMoreBox.get():
             qnaResults.append(8)
         if self.checker.get():
-            qnaResults.append(9)
-        if self.spots.get():
-            qnaResults.append(10)
-        if self.length.get():
-            qnaResults.append(11)
-        if self.width.get():
-            qnaResults.append(12)
-        if self.lessThan12.get():
-            qnaResults.append(13)
-        if self.between12And24.get():
-            qnaResults.append(14)
-        if self.between24And36.get():
+            qnaResults.append(21)
+        if self.greaterThan36.get():
             qnaResults.append(15)
+        if self.length.get():
+            qnaResults.append(22)
+        if self.width.get():
+            qnaResults.append(23)
+        if self.lessThan12.get():
+            qnaResults.append(12)
+        if self.between12And24.get():
+            qnaResults.append(13)
+        if self.between24And36.get():
+            qnaResults.append(14)
         if self.flatHead.get():
             qnaResults.append(16)
         if self.roundHead.get():
