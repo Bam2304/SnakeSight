@@ -57,4 +57,5 @@ def testQuestionaire( qnaResults ):
         del keys[indexMax]
 
     # Return the rating dictionary
+    #print(rating)
     return rating
