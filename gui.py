@@ -234,8 +234,10 @@ class SecondPage(tk.Frame):
         if self.lightSpots.get():
             qnaResults.append(20)
 
-        OUTPUTResult = CSVReader.testQuestionaire(qnaResults)
-        OUTPUTResultOutput = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult) 
+        #instantiate CSVReader and get results
+        OUTPUTResult = CSVReader.Reader().testQuestionaire(qnaResults)
+        opd = ResultsPageOutPutData.OutPutData()
+        OUTPUTResultOutput = opd.GetFormattedSnakeInfo(OUTPUTResult) 
 
         
 
