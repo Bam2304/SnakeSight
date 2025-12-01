@@ -397,10 +397,12 @@ class SecondPage(BackgroundMixin, tk.Frame):
         if self.darkSpots.get(): qnaResults.append(19)
         if self.lightSpots.get(): qnaResults.append(20)
 
-        # Process results
-        OUTPUTResult = CSVReader.testQuestionaire(qnaResults)
-        formatted = ResultsPageOutPutData.GetFormattedSnakeInfo(OUTPUTResult)
-        final_text = "\n".join(formatted)
+
+        #instantiate CSVReader and get results
+        OUTPUTResult = CSVReader.Reader().testQuestionaire(qnaResults)
+        opd = ResultsPageOutPutData.OutPutData()
+        OUTPUTResultOutput = opd.GetFormattedSnakeInfo(OUTPUTResult)
+        final_text = "\n".join(OUTPUTResultOutput)
 
         resultsPage.addInfo(final_text)
         controller.showFrame("ResultsPage")
