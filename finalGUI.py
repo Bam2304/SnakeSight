@@ -241,7 +241,11 @@ class MainPage(BackgroundMixin, tk.Frame):
     def uploadImage(self):
         
         bucket = supabase.storage.from_("Modelimages")
-        bucket.remove("blackrat2.jpg")
+        #bucket.remove("blackrat2.jpg")
+
+        response = (supabase.storage .from_("Modelimages").remove("blackrat2.jpg") )
+        
+
 
         filePath = filedialog.askopenfilename(
             title="Choose a snake photo",
@@ -264,18 +268,24 @@ class MainPage(BackgroundMixin, tk.Frame):
                 
                 # 1. Delete old file (ignore errors if it doesn't exist)
                 
-                file_name = "blackrat2.jpg"
+                file_name = "snk.jpg"
 
                 # 2. Upload new file
                 result = bucket.upload(
                     path=file_name,
                     file=file_bytes,
                     file_options={"content-type": "image/jpeg"}
+
                 )
+                
+                response = (supabase.storage
+                            .from_("Modelimages").upload(file_name,
+                    file_bytes,
+                    {"upsert": 'true'}) )
 
                 print("Uploaded:", result)
                 self.statusLabel.config(text="Uploaded and replaced blackrat2.jpg")
-
+                
             except Exception as e:
                 print("Error:", e)
                 self.statusLabel.config(text="Upload failed")
