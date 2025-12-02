@@ -3,6 +3,13 @@ from tkinter import filedialog, messagebox
 from PIL import Image, ImageTk
 import ResultsPageOutPutData
 import CSVReader
+import os
+
+from supabase import create_client, Client
+supabase_url: str = os.getenv("SUPABASE_URL")
+supabase_key: str = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(supabase_url, supabase_key)
+
 
 # ===== Global styling constants =====
 APP_BG = "#000000"        # dark base
@@ -232,18 +239,47 @@ class MainPage(BackgroundMixin, tk.Frame):
         ).place(x=18, y=10)
 
     def uploadImage(self):
+        
+        bucket = supabase.storage.from_("Modelimages")
+        bucket.remove("blackrat2.jpg")
+
         filePath = filedialog.askopenfilename(
             title="Choose a snake photo",
             filetypes=[("Image Files", "*.png *.jpg *.jpeg *.gif")]
         )
+
+        
+
         if filePath:
             try:
+                # Display locally
                 tempImg = Image.open(filePath)
                 self.controller.sharedImage = ImageTk.PhotoImage(tempImg)
-                self.statusLabel.config(text="Image submitted. You can continue to the Q&A.")
-            except Exception:
-                self.statusLabel.config(text="Error opening that file.")
-                messagebox.showerror("Image error", "Unable to open the selected image.")
+
+                # Read image bytes for upload
+                with open(filePath, "rb") as f:
+                    file_bytes = f.read()
+
+                # Forced filename
+                
+                # 1. Delete old file (ignore errors if it doesn't exist)
+                
+                file_name = "blackrat2.jpg"
+
+                # 2. Upload new file
+                result = bucket.upload(
+                    path=file_name,
+                    file=file_bytes,
+                    file_options={"content-type": "image/jpeg"}
+                )
+
+                print("Uploaded:", result)
+                self.statusLabel.config(text="Uploaded and replaced blackrat2.jpg")
+
+            except Exception as e:
+                print("Error:", e)
+                self.statusLabel.config(text="Upload failed")
+
 
     def updatePage(self):
         if self.controller.sharedImage:

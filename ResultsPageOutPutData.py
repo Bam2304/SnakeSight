@@ -74,7 +74,7 @@ class OutPutData:
 
     #resultNumberForm = {15: 10.0, 16: 10.0, 1: 0.0, 2: 0.0, 3: 0.0}
     """need to rewrite to work. Currenlty displaying all the wrong."""
-    def FormatSnakeResults(self):
+    def FormatSnakeResults(self, snake_data):
         
         
         """
@@ -104,7 +104,7 @@ class OutPutData:
 
         formatted_snakes = []
     ##
-        for i, snake in enumerate(self.snake_data, start=1):
+        for i, snake in enumerate(snake_data, start=1):
             #print(i)
             #print(snake)
 
