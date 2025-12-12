@@ -1,4 +1,4 @@
-Everything is run from gui.py, however some modules will need to be installed using pip.
+Everything is run from finalGui.py, however some modules will need to be installed using pip.
 
 -Tkinter for gui
 
